@@ -15,6 +15,7 @@ pub fn main() !void {
     defer right.deinit();
     var right_score = Map(i32, u32).init(gpa);
     defer right_score.deinit();
+
     // >>> PART 1 >>>
     while (rows.next()) |row| {
         var sides = splitSeq(u8, row, "   ");
