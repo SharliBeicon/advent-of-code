@@ -5,6 +5,12 @@ const Map = std.AutoHashMap;
 const util = @import("util.zig");
 const gpa = util.gpa;
 
+const splitSeq = std.mem.splitSequence;
+const splitSca = std.mem.splitScalar;
+const parseInt = std.fmt.parseInt;
+const print = std.debug.print;
+const sort = std.sort.block;
+
 const data = @embedFile("data/day01.txt");
 
 pub fn main() !void {
@@ -61,9 +67,3 @@ pub fn main() !void {
 fn lessThan(_: void, a: []const u8, b: []const u8) bool {
     return std.mem.lessThan(u8, a, b);
 }
-
-const splitSeq = std.mem.splitSequence;
-const splitSca = std.mem.splitScalar;
-const parseInt = std.fmt.parseInt;
-const print = std.debug.print;
-const sort = std.sort.block;
