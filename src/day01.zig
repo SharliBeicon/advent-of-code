@@ -38,8 +38,6 @@ pub fn main() !void {
     for (left.items, right.items) |l, r| {
         distance += @abs(try parseInt(i32, l, 10) - try parseInt(i32, r, 10));
     }
-
-    print("Total Distance: {}\n", .{distance});
     // <<< PART 1 <<<
 
     // >>> PART 2 >>>
@@ -59,9 +57,9 @@ pub fn main() !void {
         const result = right_score.get(value) orelse continue;
         similarity += @as(u32, @intCast(value)) * result;
     }
-
-    print("Similarity Score: {}\n", .{similarity});
     // <<< PART 2 <<<
+
+    print("***Day 01***\nPart 01: {}\nPart 02: {}\n", .{ distance, similarity });
 }
 
 fn lessThan(_: void, a: []const u8, b: []const u8) bool {
