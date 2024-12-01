@@ -11,40 +11,32 @@ const gpa = util.gpa;
 const data = @embedFile("data/day01.txt");
 
 pub fn main() !void {
-    // >>> PART 1 >>>
     var rows = splitSca(u8, data, '\n');
     var left = std.ArrayList([]const u8).init(gpa);
     defer left.deinit();
-
     var right = std.ArrayList([]const u8).init(gpa);
     defer right.deinit();
-
+    var right_score = std.AutoHashMap(i32, u32).init(gpa);
+    defer right_score.deinit();
+    // >>> PART 1 >>>
     while (rows.next()) |row| {
         var sides = splitSeq(u8, row, "   ");
 
-        const left_side = sides.next() orelse break;
-        const right_side = sides.next() orelse break;
-
-        try left.append(left_side);
-        try right.append(right_side);
+        try left.append(sides.next() orelse break);
+        try right.append(sides.next() orelse break);
     }
     sort([]const u8, left.items, {}, lessThan);
     sort([]const u8, right.items, {}, lessThan);
 
     var distance: u32 = 0;
     for (left.items, right.items) |l, r| {
-        const ileft = try std.fmt.parseInt(i32, l, 10);
-        const iright = try std.fmt.parseInt(i32, r, 10);
-
-        distance += @abs(ileft - iright);
+        distance += @abs(try std.fmt.parseInt(i32, l, 10) - try std.fmt.parseInt(i32, r, 10));
     }
 
     std.debug.print("Total Distance: {}\n", .{distance});
     // <<< PART 1 <<<
 
     // >>> PART 2 >>>
-    var right_score = std.AutoHashMap(i32, u32).init(gpa);
-    defer right_score.deinit();
 
     for (right.items) |item| {
         const value = try std.fmt.parseInt(i32, item, 10);
