@@ -37,7 +37,6 @@ pub fn main() !void {
     // <<< PART 1 <<<
 
     // >>> PART 2 >>>
-
     for (right.items) |item| {
         const value = try std.fmt.parseInt(i32, item, 10);
         const result = try right_score.getOrPut(value);
