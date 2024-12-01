@@ -11,7 +11,64 @@ const gpa = util.gpa;
 const data = @embedFile("data/day01.txt");
 
 pub fn main() !void {
-    
+    // >>> PART 1 >>>
+    var rows = splitSca(u8, data, '\n');
+    var left = std.ArrayList([]const u8).init(gpa);
+    defer left.deinit();
+
+    var right = std.ArrayList([]const u8).init(gpa);
+    defer right.deinit();
+
+    while (rows.next()) |row| {
+        var sides = splitSeq(u8, row, "   ");
+
+        const left_side = sides.next() orelse break;
+        const right_side = sides.next() orelse break;
+
+        try left.append(left_side);
+        try right.append(right_side);
+    }
+    sort([]const u8, left.items, {}, lessThan);
+    sort([]const u8, right.items, {}, lessThan);
+
+    var distance: u32 = 0;
+    for (left.items, right.items) |l, r| {
+        const ileft = try std.fmt.parseInt(i32, l, 10);
+        const iright = try std.fmt.parseInt(i32, r, 10);
+
+        distance += @abs(ileft - iright);
+    }
+
+    std.debug.print("Total Distance: {}\n", .{distance});
+    // <<< PART 1 <<<
+
+    // >>> PART 2 >>>
+    var right_score = std.AutoHashMap(i32, u32).init(gpa);
+    defer right_score.deinit();
+
+    for (right.items) |item| {
+        const value = try std.fmt.parseInt(i32, item, 10);
+        const result = try right_score.getOrPut(value);
+        if (!result.found_existing) {
+            result.value_ptr.* = 1;
+        } else {
+            result.value_ptr.* += 1;
+        }
+    }
+
+    var similarity: u32 = 0;
+    for (left.items) |item| {
+        const value = try std.fmt.parseInt(i32, item, 10);
+        const result = right_score.get(value) orelse continue;
+        similarity += @as(u32, @intCast(value)) * result;
+    }
+
+    std.debug.print("Similarity Score: {}\n", .{similarity});
+    // <<< PART 2 <<<
+}
+
+fn lessThan(_: void, a: []const u8, b: []const u8) bool {
+    return std.mem.lessThan(u8, a, b);
 }
 
 // Useful stdlib functions
