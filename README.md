@@ -26,4 +26,4 @@
 - Day 24 --
 - Day 25 --
 
-Template from (Zig-AoC-Template)[https://github.com/SpexGuy/Zig-AoC-Template]
+Template from [Zig-AoC-Template](https://github.com/SpexGuy/Zig-AoC-Template)
