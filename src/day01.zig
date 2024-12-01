@@ -16,6 +16,7 @@ pub fn main() !void {
     var right_score = Map(i32, u32).init(gpa);
     defer right_score.deinit();
 
+    // >>> PART 1 >>>
     while (rows.next()) |row| {
         var sides = splitSeq(u8, row, "   ");
 
@@ -29,11 +30,16 @@ pub fn main() !void {
 
     var distance: u32 = 0;
     for (left.items, right.items) |l, r| {
-        const ileft = try parseInt(i32, l, 10);
-        const iright = try parseInt(i32, r, 10);
-        distance += @abs(ileft - iright);
+        distance += @abs(try parseInt(i32, l, 10) - try parseInt(i32, r, 10));
+    }
 
-        const result = try right_score.getOrPut(iright);
+    print("Total Distance: {}\n", .{distance});
+    // <<< PART 1 <<<
+
+    // >>> PART 2 >>>
+    for (right.items) |item| {
+        const value = try parseInt(i32, item, 10);
+        const result = try right_score.getOrPut(value);
         if (!result.found_existing) {
             result.value_ptr.* = 1;
         } else {
@@ -48,8 +54,8 @@ pub fn main() !void {
         similarity += @as(u32, @intCast(value)) * result;
     }
 
-    print("Total Distance: {}\n", .{distance});
     print("Similarity Score: {}\n", .{similarity});
+    // <<< PART 2 <<<
 }
 
 fn lessThan(_: void, a: []const u8, b: []const u8) bool {
