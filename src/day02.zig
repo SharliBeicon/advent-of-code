@@ -21,6 +21,8 @@ pub fn main() !void {
 
     // PART 1
     const safe_reports = try checkReports(file, &bad_reports);
+
+    // PART 2
     const safe_reports_clean = safe_reports + cleanReports(bad_reports);
 
     print("***Day 02***\nPart 01: {}\nPart 02: {}\n", .{ safe_reports, safe_reports_clean });
@@ -83,23 +85,11 @@ fn isReportSafe(list: []i32) bool {
     var i: usize = 0;
     while (i < list.len - 1) : (i += 1) {
         if (is_decreasing) {
-            if (list[i] <= list[i + 1]) {
-                return false;
-            }
-            if (list[i] - list[i + 1] < 1 or
-                list[i] - list[i + 1] > 3)
-            {
-                return false;
-            }
+            if (list[i] <= list[i + 1]) return false;
+            if (list[i] - list[i + 1] < 1 or list[i] - list[i + 1] > 3) return false;
         } else {
-            if (list[i] >= list[i + 1]) {
-                return false;
-            }
-            if (list[i + 1] - list[i] < 1 or
-                list[i + 1] - list[i] > 3)
-            {
-                return false;
-            }
+            if (list[i] >= list[i + 1]) return false;
+            if (list[i + 1] - list[i] < 1 or list[i + 1] - list[i] > 3) return false;
         }
     }
     return true;
