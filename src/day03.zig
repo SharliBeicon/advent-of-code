@@ -27,7 +27,7 @@ fn multiply(mul: []const u8) i64 {
         const right_index = indexOfStr(u8, mul, left_index, ")") orelse break;
         defer current_index = left_index + 1;
 
-        var operands = splitSca(u8, mul[left_index + 4 .. right_index], ',');
+        var operands = splitSca(u8, mul[left_index + "mul(".len .. right_index], ',');
 
         const left_op = parseOperand(&operands) orelse continue;
         const right_op = parseOperand(&operands) orelse continue;
@@ -54,7 +54,7 @@ fn conditional_multiply(mul: []const u8) i64 {
                 }
             }
 
-            var operands = splitSca(u8, mul[left_index + 4 .. right_index], ',');
+            var operands = splitSca(u8, mul[left_index + "mul(".len .. right_index], ',');
             const left_op = parseOperand(&operands) orelse {
                 current_index = left_index + 1;
                 continue;
