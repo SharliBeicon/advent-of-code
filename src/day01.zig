@@ -1,7 +1,6 @@
 const std = @import("std");
 const List = std.ArrayList;
 const Map = std.AutoHashMap;
-
 const util = @import("util.zig");
 const gpa = util.gpa;
 
