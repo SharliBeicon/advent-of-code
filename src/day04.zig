@@ -1,3 +1,5 @@
+//! https://adventofcode.com/2024/day/4
+
 const std = @import("std");
 const List = std.ArrayList;
 const gpa = std.heap.page_allocator;

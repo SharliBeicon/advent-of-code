@@ -1,3 +1,5 @@
+//! https://adventofcode.com/2024/day/3
+
 const std = @import("std");
 const util = @import("util.zig");
 const gpa = util.gpa;

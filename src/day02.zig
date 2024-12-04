@@ -1,3 +1,5 @@
+//! https://adventofcode.com/2024/day/2
+
 const std = @import("std");
 const List = std.ArrayList;
 const util = @import("util.zig");
