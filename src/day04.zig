@@ -92,11 +92,27 @@ fn searchXmas(
 fn x_masCount(letter_soup: List([]const u8), a_positions: List(Coords)) u32 {
     var result: u32 = 0;
     for (a_positions.items) |a_position| {
-        const up_left = safeCharAccess(letter_soup, a_position[0] + directions[4][0], a_position[1] + directions[4][1]) orelse continue;
-        const up_right = safeCharAccess(letter_soup, a_position[0] + directions[5][0], a_position[1] + directions[5][1]) orelse continue;
+        const up_left = safeCharAccess(
+            letter_soup,
+            a_position[0] + directions[4][0],
+            a_position[1] + directions[4][1],
+        ) orelse continue;
+        const up_right = safeCharAccess(
+            letter_soup,
+            a_position[0] + directions[5][0],
+            a_position[1] + directions[5][1],
+        ) orelse continue;
         const a = letter_soup.items[@intCast(a_position[0])][@intCast(a_position[1])];
-        const down_left = safeCharAccess(letter_soup, a_position[0] + directions[6][0], a_position[1] + directions[6][1]) orelse continue;
-        const down_right = safeCharAccess(letter_soup, a_position[0] + directions[7][0], a_position[1] + directions[7][1]) orelse continue;
+        const down_left = safeCharAccess(
+            letter_soup,
+            a_position[0] + directions[6][0],
+            a_position[1] + directions[6][1],
+        ) orelse continue;
+        const down_right = safeCharAccess(
+            letter_soup,
+            a_position[0] + directions[7][0],
+            a_position[1] + directions[7][1],
+        ) orelse continue;
 
         const word1 = [3]u8{ up_left, a, down_right };
         const word2 = [3]u8{ up_right, a, down_left };
