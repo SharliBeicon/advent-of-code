@@ -81,7 +81,6 @@ pub fn main() !void {
             obstacles += try part02(&grid02, &guard_pos02);
         }
     }
-    // const new_obstacles = try part02(&grid02, &guard_pos);
 
     print("***Day 06***\nPart 01: {}\nPart 02: {any}\n\n", .{ visited_cells.count(), obstacles });
 }
