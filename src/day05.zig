@@ -10,6 +10,7 @@ const parseInt = std.fmt.parseInt;
 const print = std.debug.print;
 const eql = std.mem.eql;
 const contains = std.mem.containsAtLeast;
+
 const util = @import("util.zig");
 const gpa = util.gpa;
 
@@ -27,6 +28,7 @@ pub fn main() !void {
         pages.deinit();
     }
 
+    const start = try std.time.Instant.now();
     var it = splitSca(u8, data, '\n');
     var in_rules = true;
     while (it.next()) |item| {
@@ -88,5 +90,8 @@ pub fn main() !void {
             part01 += page[(page.len - 1) / 2];
         }
     }
+    const end = try std.time.Instant.now();
+    const elapsed: f64 = @floatFromInt(end.since(start));
     print("***Day 05***\nPart 01: {}\nPart 02: {}\n", .{ part01, part02 });
+    print("Elapsed: {d:.3} ms\n", .{elapsed / std.time.ns_per_ms});
 }
