@@ -44,6 +44,7 @@ pub fn main() !void {
         try grid_list.append(try line_list.toOwnedSlice());
     }
     var grid01 = try grid_list.toOwnedSlice();
+
     const grid_copy = try gpa.alloc([]u8, grid01.len);
     for (grid01, 0..) |r, i| {
         grid_copy[i] = try std.mem.Allocator.dupe(gpa, u8, r);
@@ -66,6 +67,7 @@ pub fn main() !void {
     for (grid_copy, 0..) |r, i| {
         grid02[i] = try std.mem.Allocator.dupe(gpa, u8, r);
     }
+
     var obstacles: u32 = 0;
     for (grid_copy, 0..) |row, x| {
         for (row, 0..) |cell, y| {
@@ -81,7 +83,7 @@ pub fn main() !void {
     }
     // const new_obstacles = try part02(&grid02, &guard_pos);
 
-    print("***Day 06***\nPart 01: {}\nPart 02: {any}\n", .{ visited_cells.count(), obstacles });
+    print("***Day 06***\nPart 01: {}\nPart 02: {any}\n\n", .{ visited_cells.count(), obstacles });
 }
 
 fn part01(grid: *[][]u8, guard_pos: *Coords) !std.AutoHashMap(Coords, u8) {

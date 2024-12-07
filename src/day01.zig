@@ -60,7 +60,7 @@ pub fn main() !void {
     }
     // <<< PART 2 <<<
 
-    print("***Day 01***\nPart 01: {}\nPart 02: {}\n", .{ distance, similarity });
+    print("***Day 01***\nPart 01: {}\nPart 02: {}\n\n", .{ distance, similarity });
 }
 
 fn lessThan(_: void, a: []const u8, b: []const u8) bool {

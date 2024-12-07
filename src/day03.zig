@@ -18,7 +18,7 @@ pub fn main() !void {
     result01 = multiply(data);
     result02 = conditional_multiply(data);
 
-    print("***Day 03***\nPart 01: {}\nPart 02: {}\n", .{ result01, result02 });
+    print("***Day 03***\nPart 01: {}\nPart 02: {}\n\n", .{ result01, result02 });
 }
 
 fn multiply(mul: []const u8) i64 {

@@ -47,7 +47,7 @@ pub fn main() !void {
     // PART 2
     const x_mas_count = x_masCount(letter_soup, a_positions);
 
-    print("***Day 04***\nPart 01: {}\nPart 02: {}\n", .{ xmas_count, x_mas_count });
+    print("***Day 04***\nPart 01: {}\nPart 02: {}\n\n", .{ xmas_count, x_mas_count });
 }
 
 fn xmasCount(letter_soup: List([]const u8), x_positions: List(Coords)) u32 {

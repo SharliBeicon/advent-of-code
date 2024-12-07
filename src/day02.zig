@@ -21,7 +21,7 @@ pub fn main() !void {
     // PART 2
     const safe_reports_clean = safe_reports + cleanReports(bad_reports);
 
-    print("***Day 02***\nPart 01: {}\nPart 02: {}\n", .{ safe_reports, safe_reports_clean });
+    print("***Day 02***\nPart 01: {}\nPart 02: {}\n\n", .{ safe_reports, safe_reports_clean });
 }
 
 fn checkReports(data: []const u8, bad_reports: *List([]i32)) !i32 {
