@@ -1,3 +1,5 @@
+//! https://adventofcode.com/2024/day/8
+
 const std = @import("std");
 const Allocator = std.mem.Allocator;
 const List = std.ArrayList;
@@ -10,9 +12,7 @@ const gpa = util.gpa;
 
 const data = @embedFile("data/day08.txt");
 
-pub fn main() !void {
-    
-}
+pub fn main() !void {}
 
 // Useful stdlib functions
 const tokenizeAny = std.mem.tokenizeAny;

@@ -1,3 +1,5 @@
+//! https://adventofcode.com/2024/day/7
+
 const std = @import("std");
 const List = std.ArrayList;
 const Map = std.AutoHashMap;
