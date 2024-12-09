@@ -16,7 +16,7 @@ pub fn main() {
 
         if !found_basement && part01 != -1 {
             part02 += 1
-        } else {
+        } else if !found_basement {
             found_basement = true;
         }
     });
