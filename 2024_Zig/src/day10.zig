@@ -113,8 +113,6 @@ fn getTrailsPart02(map: [][]const u8, trailhead: @Vector(2, isize), next_expecte
     for (step_direction) |step| {
         const next_step = trailhead + step;
 
-        visited.*[@intCast(trailhead[0])][@intCast(trailhead[1])] = true;
-
         trails += try getTrailsPart02(map, next_step, current + 1, visited);
     }
 
