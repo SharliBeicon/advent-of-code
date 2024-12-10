@@ -95,16 +95,14 @@ fn checksum_part02(filesystem: []i64) !void {
         for (block) |*b| {
             b.* = -1;
         }
-        const block_index = indexOfSec(i64, filesystem, block);
+        const block_index = indexOfSec(i64, filesystem[0..needle_start], block);
         if (block_index) |bi| {
-            if (bi < needle_start) {
-                var id: usize = bi;
-                var del_id: usize = needle_start;
-                while (id < bi + block_size) : (id += 1) {
-                    filesystem[id] = needle;
-                    filesystem[del_id] = -1;
-                    del_id += 1;
-                }
+            var id: usize = bi;
+            var del_id: usize = needle_start;
+            while (id < bi + block_size) : (id += 1) {
+                filesystem[id] = needle;
+                filesystem[del_id] = -1;
+                del_id += 1;
             }
         }
     }
