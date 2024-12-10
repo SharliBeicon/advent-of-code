@@ -38,12 +38,15 @@ pub fn main() !void {
     const filesystem01 = try filesystem_list.toOwnedSlice();
     const filesystem02 = try Allocator.dupe(gpa, i64, filesystem01);
 
-    const part01 = checksum_part01(filesystem01);
-    const part02 = try checksum_part02(filesystem02);
-    print("***Day 09***\nPart 01: {}\nPart 02: {}\n\n", .{ part01, part02 });
+    const part01 = try std.Thread.spawn(.{}, checksum_part01, .{filesystem01});
+    const part02 = try std.Thread.spawn(.{}, checksum_part02, .{filesystem02});
+
+    print("***Day 09***\n", .{});
+    part01.join();
+    part02.join();
 }
 
-fn checksum_part01(filesystem: []i64) i64 {
+fn checksum_part01(filesystem: []i64) void {
     var i: usize = 0;
     var j: usize = filesystem.len - 1;
     var aux: i64 = 0;
@@ -68,10 +71,10 @@ fn checksum_part01(filesystem: []i64) i64 {
         result += filesystem[idx] * @as(i64, @intCast(idx));
     }
 
-    return result;
+    print("Part 01: {}\n", .{result});
 }
 
-fn checksum_part02(filesystem: []i64) !i64 {
+fn checksum_part02(filesystem: []i64) !void {
     var i: isize = @intCast(filesystem.len - 1);
     var needle: i64 = filesystem[@intCast(i)];
     outer_loop: while (i >= 0) {
@@ -114,5 +117,5 @@ fn checksum_part02(filesystem: []i64) !i64 {
         }
     }
 
-    return result;
+    print("Part 02: {}\n", .{result});
 }
