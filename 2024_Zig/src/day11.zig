@@ -31,14 +31,14 @@ pub fn main() !void {
     var part01: u64 = 0;
     var part02: u64 = 0;
     for (list.items) |item| {
-        part01 += try computeCorridor(&map01, item, 25);
-        part02 += try computeCorridor(&map02, item, 75);
+        part01 += try computeStone(&map01, item, 25);
+        part02 += try computeStone(&map02, item, 75);
     }
 
     print("***DAY 11***\nPart 01: {}\nPart 02: {}\n\n", .{ part01, part02 });
 }
 
-fn computeCorridor(map: *HashMap(Pair, u64), item: u64, n: usize) !u64 {
+fn computeStone(map: *HashMap(Pair, u64), item: u64, n: usize) !u64 {
     if (n == 0) return 1;
 
     const digits: u64 = if (item == 0) 1 else std.math.log10(item) + 1;
@@ -49,7 +49,7 @@ fn computeCorridor(map: *HashMap(Pair, u64), item: u64, n: usize) !u64 {
         return res.value_ptr.*;
     } else {
         if (item == 0) {
-            result = try computeCorridor(map, 1, n - 1);
+            result = try computeStone(map, 1, n - 1);
         } else if (digits % 2 == 0) {
             const half_digits = digits / 2;
             const divisor = std.math.pow(u64, 10, half_digits);
@@ -57,9 +57,9 @@ fn computeCorridor(map: *HashMap(Pair, u64), item: u64, n: usize) !u64 {
             const first_half: u64 = item / divisor;
             const second_half: u64 = item % divisor;
 
-            result = try computeCorridor(map, first_half, n - 1) + try computeCorridor(map, second_half, n - 1);
+            result = try computeStone(map, first_half, n - 1) + try computeStone(map, second_half, n - 1);
         } else {
-            result = try computeCorridor(map, 2024 * item, n - 1);
+            result = try computeStone(map, 2024 * item, n - 1);
         }
 
         try map.put(.{ item, n }, result);
