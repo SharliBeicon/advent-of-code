@@ -58,8 +58,7 @@ fn computeCorridor(map: *HashMap(Pair, u64), item: u64, n: usize) !u64 {
             const second_half: u64 = item % divisor;
 
             result = 0;
-            result += try computeCorridor(map, first_half, n - 1);
-            result += try computeCorridor(map, second_half, n - 1);
+            result = try computeCorridor(map, first_half, n - 1) + try computeCorridor(map, second_half, n - 1);
         } else {
             result = try computeCorridor(map, 2024 * item, n - 1);
         }
