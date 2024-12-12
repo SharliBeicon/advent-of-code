@@ -2,45 +2,160 @@ const std = @import("std");
 const Allocator = std.mem.Allocator;
 const List = std.ArrayList;
 const Map = std.AutoHashMap;
-const StrMap = std.StringHashMap;
-const BitSet = std.DynamicBitSet;
 
 const util = @import("util.zig");
 const gpa = util.gpa;
 
+const tokenizeSca = std.mem.tokenizeScalar;
+const print = std.debug.print;
+const contains = std.mem.containsAtLeast;
+
 const data = @embedFile("data/day12.txt");
 
+const Position = @Vector(2, isize);
+
+const steps = [_]Position{
+    .{ -1, 0 }, // UP
+    .{ 0, 1 }, // RIGHT
+    .{ 1, 0 }, // DOWN
+    .{ 0, -1 }, // LEFT
+};
+
+const GardenPlot = struct {
+    kind: u8,
+    items: []Position,
+};
+
 pub fn main() !void {
-    
+    var it = tokenizeSca(u8, data, '\n');
+    var farm_list = List([]const u8).init(gpa);
+    while (it.next()) |item| {
+        try farm_list.append(item);
+    }
+    const farm = try farm_list.toOwnedSlice();
+
+    var visited: [][]bool = try Allocator.alloc(gpa, []bool, farm.len);
+    var id: usize = 0;
+    while (id < farm.len) : (id += 1) {
+        visited[id] = try Allocator.alloc(gpa, bool, farm[0].len);
+        @memset(visited[id], false);
+    }
+
+    const garden_plots: []GardenPlot = try computeGardenPlots(farm, &visited);
+
+    var result01: u64 = 0;
+    var result02: u64 = 0;
+    for (garden_plots) |plot| {
+        result01 += plot.items.len * try calculatePerimeter(plot.items);
+        result02 += plot.items.len * try countSides(plot.items);
+    }
+
+    print("***Day 12***\nPart 01: {}\nPart 02: {}\n\n", .{ result01, result02 });
 }
 
-// Useful stdlib functions
-const tokenizeAny = std.mem.tokenizeAny;
-const tokenizeSeq = std.mem.tokenizeSequence;
-const tokenizeSca = std.mem.tokenizeScalar;
-const splitAny = std.mem.splitAny;
-const splitSeq = std.mem.splitSequence;
-const splitSca = std.mem.splitScalar;
-const indexOf = std.mem.indexOfScalar;
-const indexOfAny = std.mem.indexOfAny;
-const indexOfStr = std.mem.indexOfPosLinear;
-const lastIndexOf = std.mem.lastIndexOfScalar;
-const lastIndexOfAny = std.mem.lastIndexOfAny;
-const lastIndexOfStr = std.mem.lastIndexOfLinear;
-const trim = std.mem.trim;
-const sliceMin = std.mem.min;
-const sliceMax = std.mem.max;
+fn computeGardenPlots(farm: [][]const u8, visited: *[][]bool) ![]GardenPlot {
+    var garden_plots = List(GardenPlot).init(gpa);
 
-const parseInt = std.fmt.parseInt;
-const parseFloat = std.fmt.parseFloat;
+    for (farm, 0..) |row, i| {
+        for (row, 0..) |cell, j| {
+            if (!visited.*[i][j]) {
+                var positions = List(Position).init(gpa);
+                try computeSinglePlot(farm, visited, .{ @intCast(i), @intCast(j) }, &positions);
+                const garden_plot = GardenPlot{
+                    .kind = cell,
+                    .items = try positions.toOwnedSlice(),
+                };
 
-const print = std.debug.print;
-const assert = std.debug.assert;
+                try garden_plots.append(garden_plot);
+            }
+        }
+    }
 
-const sort = std.sort.block;
-const asc = std.sort.asc;
-const desc = std.sort.desc;
+    return try garden_plots.toOwnedSlice();
+}
 
-// Generated from template/template.zig.
-// Run `zig build generate` to update.
-// Only unmodified days will be updated.
+fn computeSinglePlot(
+    farm: [][]const u8,
+    visited: *[][]bool,
+    current_pos: Position,
+    positions: *List(Position),
+) !void {
+    try positions.append(current_pos);
+    visited.*[@intCast(current_pos[0])][@intCast(current_pos[1])] = true;
+
+    for (steps) |step| {
+        const next_pos: Position = current_pos + step;
+        if (util.inBounds(farm, next_pos) and
+            !visited.*[@intCast(next_pos[0])][@intCast(next_pos[1])] and
+            farm[@intCast(next_pos[0])][@intCast(next_pos[1])] ==
+            farm[@intCast(current_pos[0])][@intCast(current_pos[1])])
+        {
+            try computeSinglePlot(farm, visited, next_pos, positions);
+        }
+    }
+}
+
+fn calculatePerimeter(positions: []Position) !u64 {
+    var perimeter: usize = 0;
+    var positionSet = Map(Position, void).init(gpa);
+    defer positionSet.deinit();
+
+    for (positions) |pos| {
+        _ = try positionSet.getOrPut(pos);
+    }
+
+    for (positions) |pos| {
+        for (steps) |step| {
+            const neighbor = pos + step;
+            if (!positionSet.contains(neighbor)) {
+                perimeter += 1;
+            }
+        }
+    }
+
+    return perimeter;
+}
+
+fn areAdjacent(pos1: Position, pos2: Position) bool {
+    const dx = @abs(pos1[0] - pos2[0]);
+    const dy = @abs(pos1[1] - pos2[1]);
+    return (dx == 1 and dy == 0) or (dx == 0 and dy == 1);
+}
+
+fn countSides(positions: []Position) !u32 {
+    var sides: u32 = 0;
+    var positionSet = Map(Position, void).init(gpa);
+    defer positionSet.deinit();
+
+    for (positions) |pos| {
+        _ = try positionSet.getOrPut(pos);
+    }
+
+    for (positions) |pos| {
+        // Outer corners
+        if (!positionSet.contains(.{ pos[0] - 1, pos[1] }) and
+            !positionSet.contains(.{ pos[0], pos[1] - 1 })) sides += 1;
+        if (!positionSet.contains(.{ pos[0] + 1, pos[1] }) and
+            !positionSet.contains(.{ pos[0], pos[1] - 1 })) sides += 1;
+        if (!positionSet.contains(.{ pos[0] - 1, pos[1] }) and
+            !positionSet.contains(.{ pos[0], pos[1] + 1 })) sides += 1;
+        if (!positionSet.contains(.{ pos[0] + 1, pos[1] }) and
+            !positionSet.contains(.{ pos[0], pos[1] + 1 })) sides += 1;
+
+        // Inner corners
+        if (positionSet.contains(.{ pos[0] - 1, pos[1] }) and
+            positionSet.contains(.{ pos[0], pos[1] - 1 }) and
+            !positionSet.contains(.{ pos[0] - 1, pos[1] - 1 })) sides += 1;
+        if (positionSet.contains(.{ pos[0] + 1, pos[1] }) and
+            positionSet.contains(.{ pos[0], pos[1] - 1 }) and
+            !positionSet.contains(.{ pos[0] + 1, pos[1] - 1 })) sides += 1;
+        if (positionSet.contains(.{ pos[0] - 1, pos[1] }) and
+            positionSet.contains(.{ pos[0], pos[1] + 1 }) and
+            !positionSet.contains(.{ pos[0] - 1, pos[1] + 1 })) sides += 1;
+        if (positionSet.contains(.{ pos[0] + 1, pos[1] }) and
+            positionSet.contains(.{ pos[0], pos[1] + 1 }) and
+            !positionSet.contains(.{ pos[0] + 1, pos[1] + 1 })) sides += 1;
+    }
+
+    return sides;
+}
