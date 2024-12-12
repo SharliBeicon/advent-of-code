@@ -116,12 +116,6 @@ fn calculatePerimeter(positions: []Position) !u64 {
     return perimeter;
 }
 
-fn areAdjacent(pos1: Position, pos2: Position) bool {
-    const dx = @abs(pos1[0] - pos2[0]);
-    const dy = @abs(pos1[1] - pos2[1]);
-    return (dx == 1 and dy == 0) or (dx == 0 and dy == 1);
-}
-
 fn countSides(positions: []Position) !u32 {
     var sides: u32 = 0;
     var positionSet = Map(Position, void).init(gpa);
