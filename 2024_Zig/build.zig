@@ -10,7 +10,6 @@ const required_zig_version = std.SemanticVersion.parse("0.13.0") catch unreachab
 fn linkObject(b: *Build, obj: *CompileStep) void {
     if (should_link_libc) obj.linkLibC();
     _ = b;
-
     // Add linking for packages or third party libraries here
 }
 
@@ -47,9 +46,16 @@ pub fn build(b: *Build) void {
         const exe = b.addExecutable(.{
             .name = dayString,
             .root_source_file = b.path(zigFile),
+            .link_libc = true,
             .target = target,
             .optimize = mode,
         });
+
+        exe.addCSourceFile(.{
+            .file = b.path("lib/regex_slim.c"),
+            .flags = &.{"-std=c99"},
+        });
+        exe.addIncludePath(b.path("lib"));
         linkObject(b, exe);
 
         const install_cmd = b.addInstallArtifact(exe, .{});

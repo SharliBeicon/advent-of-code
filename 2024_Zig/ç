@@ -51,15 +51,15 @@ pub fn main() !void {
                 try parseInt(i128, s[1], 10),
                 try parseInt(i128, s[2], 10),
                 try parseInt(i128, s[3], 10),
-                try parseInt(i128, s[4], 10),
-                try parseInt(i128, s[5], 10),
+                try parseInt(i128, try std.fmt.allocPrint(gpa, "1000000000{s}", .{s[4]}), 10),
+                try parseInt(i128, try std.fmt.allocPrint(gpa, "1000000000{s}", .{s[5]}), 10),
             );
 
             tokens_p2 += cur_tokens;
         }
     }
 
-    std.debug.print("***Day 13***\nPart 01: {}\nPart 02: {}\n\n", .{ tokens_p1, tokens_p2 });
+    std.debug.print("{}\n{}\n", .{ tokens_p1, tokens_p2 });
 }
 
 fn getTokensPart01(
@@ -101,14 +101,14 @@ fn getTokensPart02(
     x: i128,
     y: i128,
 ) i128 {
-    const nx = 10_000_000_000_000 + x;
-    const ny = 10_000_000_000_000 + y;
+    const a: i128 = (bx * y + by * x) /
+        (@as(f64, @floatFromInt(bx * ay)) - @as(f64, @floatFromInt(by * ax)));
 
-    const a: i128 = @divFloor(-bx * ny + by * nx, ax * by - ay * bx);
-    const b: i128 = @divFloor(ax * ny - ay * nx, ax * by - ay * bx);
-    if (ax * a + bx * b == nx and ay * a + by * b == ny) {
-        return 3 * a + b;
-    }
+    const b: f64 = (@as(f64, @floatFromInt(x - ax)) * a) /
+        (@as(f64, @floatFromInt(bx)));
+
+    if (@abs(a - @round(a)) < tolerance and @abs(b - @round(b)) < tolerance)
+        return 3 * @as(i128, @intFromFloat(a)) + @as(i128, @intFromFloat(b));
 
     return 0;
 }
