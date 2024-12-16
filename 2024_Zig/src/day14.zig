@@ -58,8 +58,10 @@ pub fn main() !void {
     defer gpa.free(robots_part02);
 
     const safety_factor: u64 = safetyFactor(robots);
+
     std.debug.print("{}\n", .{safety_factor});
 
+    // TREE IS DRAWN AT ITERATION 6888
     drawTree(robots_part02);
 }
 
